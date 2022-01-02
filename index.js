@@ -35,7 +35,6 @@ async function run() {
     // insert a new user to database
     app.post("/users", async (req, res) => {
       const user = req.body;
-      console.log(user);
       const result = await usersCollection.insertOne(user);
       res.json(result);
     });
@@ -46,6 +45,13 @@ async function run() {
       res.json(result);
     });
 
+    // get a single user from database
+    app.get("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await usersCollection.findOne(query);
+      res.json(result);
+    });
     // CRUD OPERATIONS GOES HERE
   } finally {
     // await client.close();
