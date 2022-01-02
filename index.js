@@ -1,47 +1,55 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const port = 5000;
-require('dotenv').config();
-const cors = require('cors');
-const { MongoClient } = require('mongodb');
-
+const port = process.env.PORT || 5000;
+require("dotenv").config();
+const cors = require("cors");
+const { MongoClient } = require("mongodb");
 
 // MIDDLEWARE
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('Hello from my product inventory management Server')
+app.get("/", (req, res) => {
+  res.send("Hello from my product inventory management Server");
 });
 
 app.listen(port, () => {
-    console.log('Listening to', port)
+  console.log("Listening to", port);
 });
 
-
-const uri = "mongodb+srv://<username>:<password>@address_goeas_here";
-
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
+const uri = `mongodb+srv://team_project:LY9bPCNqyzX2cFgg@cluster0.iuevi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 // ASYNC FUNCTION
 async function run() {
-    try {
-        await client.connect();
-        console.log('Connected to database');
+  try {
+    await client.connect();
+    console.log("Connected to database");
 
-        const database = client.db("database_name");
-        const usersCollection = database.collection("collection_name");
+    const database = client.db("product_inventory");
+    const usersCollection = database.collection("users");
 
+    // insert a new user to database
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      console.log(user);
+      const result = await usersCollection.insertOne(user);
+      res.json(result);
+    });
 
-        // CRUD OPERATIONS GOES HERE
+    // get all user from database
+    app.get("/users", async (req, res) => {
+      const result = await usersCollection.find({}).toArray();
+      res.json(result);
+    });
 
-
-
-
-    } finally {
-        // await client.close();
-    }
+    // CRUD OPERATIONS GOES HERE
+  } finally {
+    // await client.close();
+  }
 }
 // CALL ASYNC FUNCTION TO EXECUTE
 run().catch(console.dir);
