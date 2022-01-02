@@ -1,9 +1,11 @@
+// Md. Bappy Mia
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
 require("dotenv").config();
 const cors = require("cors");
 const { MongoClient } = require("mongodb");
+const ObjectId = require("mongodb").ObjectId;
 
 // MIDDLEWARE
 app.use(cors());
@@ -31,6 +33,7 @@ async function run() {
 
     const database = client.db("product_inventory");
     const usersCollection = database.collection("users");
+    const productCollection = database.collection("products");
 
     // insert a new user to database
     app.post("/users", async (req, res) => {
@@ -53,6 +56,43 @@ async function run() {
       res.json(result);
     });
     // CRUD OPERATIONS GOES HERE
+
+    // post a single product
+    app.post("/products", async (req, res) => {
+      const product = req.body;
+      const result = await productCollection.insertOne(product);
+      res.json(result);
+    });
+    // get all product from database
+    app.get("/products", async (req, res) => {
+      const result = await productCollection.find({}).toArray();
+      res.json(result);
+    });
+    // get a single product using product id
+    app.get("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await productCollection.findOne(query);
+      res.json(result);
+    });
+    // update a product to database
+    app.put("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const updateProduct = req.body;
+      const query = { _id: ObjectId(id) };
+      const updateDoc = {
+        $set: updateProduct,
+      };
+      const result = await productCollection.updateOne(query, updateDoc);
+      res.json(result);
+    });
+    // delete a single product from database
+    app.delete("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await productCollection.deleteOne(query);
+      res.json(result);
+    });
   } finally {
     // await client.close();
   }
