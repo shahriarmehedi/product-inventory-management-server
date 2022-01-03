@@ -75,6 +75,13 @@ async function run() {
       const result = await productCollection.findOne(query);
       res.json(result);
     });
+    // product get for specific user
+    app.get("/user-products", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const result = await productCollection.find(query).toArray();
+      res.json(result);
+    });
     // update a product to database
     app.put("/products/:id", async (req, res) => {
       const id = req.params.id;
