@@ -17,3 +17,5 @@ Delete a product form database : http://localhost:5000/products/id
 <br>
 Get product by specific user using query email.
 Ex: http://localhost:5000/user-products?email=bappy@gmail.com
+<br>
+Make admin link: http://localhost:5000/admin/email
