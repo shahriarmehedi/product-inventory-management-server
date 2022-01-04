@@ -19,7 +19,7 @@ app.listen(port, () => {
   console.log("Listening to", port);
 });
 
-const uri = `mongodb+srv://team_project:LY9bPCNqyzX2cFgg@cluster0.iuevi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.PASSWORD}@cluster0.iuevi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
