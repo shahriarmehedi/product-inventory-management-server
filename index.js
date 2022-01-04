@@ -55,6 +55,24 @@ async function run() {
       const result = await usersCollection.findOne(query);
       res.json(result);
     });
+
+    // make admin by user email
+    app.put("/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const options = { upsert: true };
+      const updateRole = {
+        $set: {
+          role: "Admin",
+        },
+      };
+      const result = await usersCollection.updateOne(
+        query,
+        updateRole,
+        options
+      );
+      res.json(result);
+    });
     // CRUD OPERATIONS GOES HERE
 
     // post a single product
